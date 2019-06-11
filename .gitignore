@@ -30,3 +30,13 @@
 *.exe
 *.out
 *.app
+
+\.vs/privix-core/v15/Browse\.VC\.db
+
+\.vs/privix-core/v15/Browse\.VC\.opendb
+
+\.vs/ProjectSettings\.json
+
+\.vs/slnx\.sqlite
+
+\.vs/privix-core/v15/\.suo

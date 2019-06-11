@@ -1,0 +1,12 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Privix
+Comment=Privix P2P Cryptocurrency
+Comment[fr]=Privix, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=Privix, eşten eşe kriptografik sanal para birimi
+Exec=privix-qt %u
+Terminal=false
+Type=Application
+Icon=privix128
+MimeType=x-scheme-handler/privix;
+Categories=Office;Finance;
