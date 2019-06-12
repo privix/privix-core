@@ -14,6 +14,7 @@
 #include "primitives/block.h"
 #include "uint256.h"
 #include "util.h"
+#include "spork.h"
 
 #include <math.h>
 
@@ -39,6 +40,16 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         uint256 bnTargetLimit = (~uint256(0) >> 24);
         int64_t nTargetSpacing = 60;
         int64_t nTargetTimespan = 60 * 40;
+
+		if (IsSporkActive(SPORK_23_BLOCK_TIME_RETARGET) &&
+			(pindexLast->nHeight <= 10580 && pindexLast->nHeight > 4000)) {
+			nTargetSpacing = 180;
+			nTargetTimespan = 180 * 40;
+		}else if (IsSporkActive(SPORK_23_BLOCK_TIME_RETARGET) &&
+			(pindexLast->nHeight > 10580)) {
+			nTargetSpacing = 120;
+			nTargetTimespan = 120 * 40;
+		}
 
         int64_t nActualSpacing = 0;
         if (pindexLast->nHeight != 0)
