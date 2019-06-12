@@ -42,9 +42,9 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         int64_t nTargetTimespan = 60 * 40;
 
 		if (IsSporkActive(SPORK_23_BLOCK_TIME_RETARGET) &&
-			(pindexLast->nHeight <= 10580 && pindexLast->nHeight > 10580)) {
-			nTargetSpacing = 600;
-			nTargetTimespan = 600 * 30;
+			(pindexLast->nHeight <= 10580 && pindexLast->nHeight > 4000)) {
+			nTargetSpacing = 180;
+			nTargetTimespan = 180 * 30;
 		}else if (IsSporkActive(SPORK_23_BLOCK_TIME_RETARGET) &&
 			(pindexLast->nHeight > 10580)) {
 			nTargetSpacing = 120;
