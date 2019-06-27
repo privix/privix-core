@@ -195,9 +195,9 @@ BITCOIN_CORE_H = \
   version.h \
   wallet.h \
   wallet_ismine.h \
-  walletdb.h \
   zvpxtracker.h \
   zvpxwallet.h \
+  walletdb.h \
   crypter.h \
   rpcwallet.h \
   zmq/zmqabstractnotifier.h \
@@ -285,6 +285,8 @@ libbitcoin_wallet_a_SOURCES = \
   wallet.cpp \
   wallet_ismine.cpp \
   walletdb.cpp \
+  zvpxtwallet.cpp \
+  zvpxtracker.cpp \
   authhelper.cpp \
   rpcwallet.cpp \
   db.cpp \

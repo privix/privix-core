@@ -427,7 +427,7 @@ UniValue dumpprivkey(const UniValue& params, bool fHelp)
 	return CBitcoinSecret(vchSecret).ToString();
 }
 
-UniValue dumpprivkey_abet(const UniValue& params, bool fHelp)
+UniValue dumpprivkey_vpx(const UniValue& params, bool fHelp)
 {
 	if (fHelp || params.empty() || params.size() > 2)
 		throw std::runtime_error(
@@ -596,7 +596,7 @@ UniValue dumpallprivatekeys(const UniValue& params, bool fHelp)
 	return NullUniValue;
 }
 
-UniValue dumpallprivatekeys_abet(const UniValue& params, bool fHelp)
+UniValue dumpallprivatekeys_vpx(const UniValue& params, bool fHelp)
 {
 	if (fHelp || params.size() < 1 || params.size() > 2)
 		throw std::runtime_error(
