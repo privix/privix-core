@@ -190,12 +190,16 @@ BITCOIN_CORE_H = \
   utilmoneystr.h \
   utiltime.h \
   validationinterface.h \
+  authhelper.h \
+  walletdb.h \
   version.h \
   wallet.h \
   wallet_ismine.h \
-  walletdb.h \
   zvpxtracker.h \
   zvpxwallet.h \
+  walletdb.h \
+  crypter.h \
+  rpcwallet.h \
   zmq/zmqabstractnotifier.h \
   zmq/zmqconfig.h \
   zmq/zmqnotificationinterface.h \
@@ -283,6 +287,10 @@ libbitcoin_wallet_a_SOURCES = \
   walletdb.cpp \
   zvpxwallet.cpp \
   zvpxtracker.cpp \
+  authhelper.cpp \
+  rpcwallet.cpp \
+  db.cpp \
+  crypter.cpp \
   $(BITCOIN_CORE_H)
 
 # crypto primitives library
