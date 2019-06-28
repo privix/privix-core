@@ -285,7 +285,7 @@ libbitcoin_wallet_a_SOURCES = \
   wallet.cpp \
   wallet_ismine.cpp \
   walletdb.cpp \
-  zvpxtwallet.cpp \
+  zvpxwallet.cpp \
   zvpxtracker.cpp \
   authhelper.cpp \
   rpcwallet.cpp \
