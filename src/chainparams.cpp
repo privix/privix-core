@@ -55,10 +55,10 @@ static void convertSeed6(std::vector<CAddress>& vSeedsOut, const SeedSpec6* data
 // + Contains no strange transactions
 static Checkpoints::MapCheckpoints mapCheckpoints =
     boost::assign::map_list_of
-	(0, uint256("0x0x89ccd18a25e8d4ee965b65915d0ed1fe85ff63f51b97802fa2258bae4a914338"));
+	(0, uint256("0x737cf2bd423cfe5933b749f1d6550572c080b05a7cce01bad759ed24b1311455"));
 static const Checkpoints::CCheckpointData data = {
     &mapCheckpoints,
-    1559916807, // * UNIX timestamp of last checkpoint block
+	1564702206, // * UNIX timestamp of last checkpoint block
     0,     // * total number of transactions between genesis and last checkpoint
                 //   (the tx=... number in the SetBestChain debug.log lines)
     200         // * estimated number of transactions per day after checkpoint
@@ -68,7 +68,7 @@ static Checkpoints::MapCheckpoints mapCheckpointsTestnet =
     boost::assign::map_list_of(0, uint256("0x1"));
 static const Checkpoints::CCheckpointData dataTestnet = {
     &mapCheckpointsTestnet,
-    1559916807,
+	1564702206,
     0,
     250};
 
@@ -76,7 +76,7 @@ static Checkpoints::MapCheckpoints mapCheckpointsRegtest =
     boost::assign::map_list_of(0, uint256("0x001"));
 static const Checkpoints::CCheckpointData dataRegtest = {
     &mapCheckpointsRegtest,
-    1559916807,
+	1564702206,
     0,
     100};
 
@@ -117,7 +117,7 @@ public:
         pchMessageStart[1] = 0x25; // P
         pchMessageStart[2] = 0x35; // X
         pchMessageStart[3] = 0x88; // T-8
-        vAlertPubKey = ParseHex("0435401a5693de702378a538ad939ea03b5e3b2826f68431ba840df5f418e3f3e8590ba4fb0c36097179bb55ffc4a4e065dc2ff87edb6f3ce4232a71d253ed7fff");
+        vAlertPubKey = ParseHex("03aa94469ab06f3a63f358bbc2e890f034b3c2587a37aecfa3105ceaa81698aa41");
         nDefaultPort = 7788;
         bnProofOfWorkLimit = ~uint256(0) >> 20; // Privix starting difficulty is 1 / 2^12
         nMaxReorganizationDepth = 100;
@@ -128,7 +128,7 @@ public:
 
         nTargetTimespan = 1 * 60; // Privix: 1 day
         nTargetSpacing = 120; // Privix: 1 minute
-        nLastPOWBlock = 500;
+        nLastPOWBlock = 200;
         nZerocoinStartHeight = INT_MAX;
         nMaturity = 60;
         nMasternodeCountDrift = 20;
@@ -144,20 +144,20 @@ public:
         txNew.vout.resize(1);
         txNew.vin[0].scriptSig = CScript() << 486604799 << CScriptNum(4) << vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
         txNew.vout[0].nValue = 1 * COIN;
-        txNew.vout[0].scriptPubKey = CScript() << ParseHex("0435401a5693de702378a538ad939ea03b5e3b2826f68431ba840df5f418e3f3e8590ba4fb0c36097179bb55ffc4a4e065dc2ff87edb6f3ce4232a71d253ed7fff") << OP_CHECKSIG;
+        txNew.vout[0].scriptPubKey = CScript() << ParseHex("03aa94469ab06f3a63f358bbc2e890f034b3c2587a37aecfa3105ceaa81698aa41") << OP_CHECKSIG;
         genesis.vtx.push_back(txNew);
         genesis.hashPrevBlock = 0;
         genesis.hashMerkleRoot = genesis.BuildMerkleTree();
         genesis.nVersion = 1;
-        genesis.nTime = 1559916807;
+        genesis.nTime = 1564702206;
         genesis.nBits = 504365040;
-        genesis.nNonce = 1587782;
+        genesis.nNonce = 691259;
 
         hashGenesisBlock = genesis.GetHash();
         //printf("genesis.GetHash = %s\n", genesis.GetHash().ToString().c_str());
         //printf("genesis.hashMerkleRoot = %s\n", genesis.hashMerkleRoot.ToString().c_str());
-        assert(hashGenesisBlock == uint256("0x89ccd18a25e8d4ee965b65915d0ed1fe85ff63f51b97802fa2258bae4a914338"));
-        assert(genesis.hashMerkleRoot == uint256("0xb34c94c37f24dde4c53900ff1cf4d4df92dc0fe82c77d465384849b654ef3e31"));
+        assert(hashGenesisBlock == uint256("0x737cf2bd423cfe5933b749f1d6550572c080b05a7cce01bad759ed24b1311455"));
+        assert(genesis.hashMerkleRoot == uint256("0xf0a94389c0f0c3f939a993435529fcdb4a4bcaea1db1643b2b8fa5708a1b4f55"));
 
         vSeeds.push_back(CDNSSeedData("140.82.48.162", "140.82.48.162"));
         vSeeds.push_back(CDNSSeedData("8.9.36.49", "8.9.36.49"));
@@ -185,13 +185,13 @@ public:
 
         nPoolMaxTransactions = 3;
 
-        nEnforceNewSporkKey = 1559916807; //06/03/2019 @ 11:56pm (UTC)
-        nRejectOldSporkKey = 1559503540; //06/02/2019 @ 7:25pm (UTC)
-
-		strSporkKey = "033acc705df8ef0b1fcdc161fa77ff9580547a6123662f583a739dd9f38ab952ea";
-        strSporkKeyOld = "03bec8e31a75bd7dc36b28b5eb498e64483bfaa556fcafde1ae89a3c6b07482047";
-        strObfuscationPoolDummyAddress = "Ab5bNTKMKVJWLTDCwwEEvHH9MzDhxRaL5a";
-        nStartMasternodePayments = 1559916807;
+        nEnforceNewSporkKey = 1564702206;
+        nRejectOldSporkKey = 1559503540;
+		
+		strSporkKey = "03ca92a55a9c50a21e4503f30179fd5f4a71277cb8a2bc551fd0c23d7ec6ccbe49";
+        strSporkKeyOld = "033acc705df8ef0b1fcdc161fa77ff9580547a6123662f583a739dd9f38ab952ea";
+        strObfuscationPoolDummyAddress = "XaWwN1KMqAdW4vgQ4yqLhTHo7HJEudLcgC";
+        nStartMasternodePayments = 1564702206;
 
         /** Zerocoin */
 		/* This is not active */
@@ -248,12 +248,12 @@ public:
         nZerocoinLastOldParams = INT_MAX;
 
         //! Modify the testnet genesis block so the timestamp is valid for a later start.
-        genesis.nTime = 1559916807;
-        genesis.nNonce = 1587782;
+        genesis.nTime = 1564702206;
+        genesis.nNonce = 691259;
 
 		//printf("genesis.GetHash = %s\n", genesis.GetHash().ToString().c_str());
         hashGenesisBlock = genesis.GetHash();
-        assert(hashGenesisBlock == uint256("0x89ccd18a25e8d4ee965b65915d0ed1fe85ff63f51b97802fa2258bae4a914338"));
+        assert(hashGenesisBlock == uint256("0x737cf2bd423cfe5933b749f1d6550572c080b05a7cce01bad759ed24b1311455"));
 
         vFixedSeeds.clear();
         vSeeds.clear();
@@ -283,7 +283,7 @@ public:
         strSporkKey = "023bdfaa1671a451ebb3fdf4978c7336ce9283f35733006bfe059da6cd195ecf69";
 
         strObfuscationPoolDummyAddress = "Ab5bNTKMKVJWLTDCwwEEvHH9MzDhxRaL5a";
-        nStartMasternodePayments = 1559916807;
+        nStartMasternodePayments = 1564702206;
 	}
     const Checkpoints::CCheckpointData& Checkpoints() const
     {
@@ -314,9 +314,9 @@ public:
         nTargetTimespan = 24 * 60 * 60; // Privix: 1 day
         nTargetSpacing = 1 * 60;        // Privix: 1 minutes
         bnProofOfWorkLimit = ~uint256(0) >> 1;
-        genesis.nTime = 1559503540;
+        genesis.nTime = 1564702206;
         genesis.nBits = 504365040;
-        genesis.nNonce = 1587782;
+        genesis.nNonce = 691259;
         nMaturity = 0;
         nLastPOWBlock = 999999999; // PoS complicates Regtest because of timing issues
         nZerocoinLastOldParams = 499;
@@ -324,7 +324,7 @@ public:
 
         hashGenesisBlock = genesis.GetHash();
         nDefaultPort = 39793;
-        //assert(hashGenesisBlock == uint256("0x89ccd18a25e8d4ee965b65915d0ed1fe85ff63f51b97802fa2258bae4a914338"));
+        //assert(hashGenesisBlock == uint256("0x737cf2bd423cfe5933b749f1d6550572c080b05a7cce01bad759ed24b1311455"));
 
 
         vFixedSeeds.clear(); //! Testnet mode doesn't have any fixed seeds.
