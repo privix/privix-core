@@ -1524,7 +1524,7 @@ bool CheckTransaction(const CTransaction& tx, bool fZerocoinActive, bool fReject
             if (GetAdjustedTime() > GetSporkValue(SPORK_19_ZEROCOIN_MAINTENANCE_MODE) && tx.ContainsZerocoins())
                 return state.DoS(10, error("AcceptToMemoryPool : Zerocoin transactions are temporarily disabled for maintenance"), REJECT_INVALID, "bad-tx");
 
-            if (!CheckTransaction(tx, chainActive.Height() >= Params().Zerocoin_StartHeight(), true, state, GetSporkValue(SPORK_18_SEGWIT_ACTIVATION) < chainActive.Tip()->nTime)) {
+            if (!CheckTransaction(tx, chainActive.Height() >= Params().Zerocoin_StartHeight(), true, state, FULL_SEGWIT < chainActive.Height())) {
                 return state.DoS(100, error("AcceptToMemoryPool: : CheckTransaction failed"), REJECT_INVALID, "bad-tx");
             }
 
@@ -1570,7 +1570,7 @@ bool CheckTransaction(const CTransaction& tx, bool fZerocoinActive, bool fReject
             }
 
             // Don't accept witness transactions before the final threshold passes
-            if (!GetBoolArg("-prematurewitness", false) && !tx.wit.IsNull() && !IsSporkActive(SPORK_18_SEGWIT_ACTIVATION)) {
+            if (!GetBoolArg("-prematurewitness", false) && !tx.wit.IsNull() && FULL_SEGWIT < chainActive.Height()) {
                 return state.DoS(0, false, REJECT_NONSTANDARD, "no-witness-yet", true);
             }
 
@@ -1822,7 +1822,7 @@ bool CheckTransaction(const CTransaction& tx, bool fZerocoinActive, bool fReject
             if (pfMissingInputs)
                 *pfMissingInputs = false;
 
-            if (!CheckTransaction(tx, chainActive.Height() >= Params().Zerocoin_StartHeight(), true, state, GetSporkValue(SPORK_18_SEGWIT_ACTIVATION) < chainActive.Tip()->nTime))
+            if (!CheckTransaction(tx, chainActive.Height() >= Params().Zerocoin_StartHeight(), true, state, FULL_SEGWIT < chainActive.Height()))
                 return error("AcceptableInputs: : CheckTransaction failed");
 
             // Coinbase is only valid in a block, not as a loose transaction
@@ -2183,60 +2183,33 @@ bool CheckTransaction(const CTransaction& tx, bool fZerocoinActive, bool fReject
             int64_t nSubsidy = 0;
 
             if (nHeight == 0) { // Premine
-                nSubsidy = 1000000 * COIN;
-			} else if (nHeight <= 500 && nHeight > 0) { // PoW
-				nSubsidy = 0 * COIN;
-            } else if (nHeight <= 10580 && nHeight > 500) { // Presale
-                nSubsidy = 0.01 * COIN;
-            } else if (nHeight <= 20660 && nHeight > 10580) { // Phase 1
-                nSubsidy = 1 * COIN;
-            } else if (nHeight <= 30740 && nHeight > 20660) { // Phase 2
-                nSubsidy = 1.5 * COIN;
-            } else if (nHeight <= 40820 && nHeight > 30740) { // Phase 3
-                nSubsidy = 2 * COIN;
-            } else if (nHeight <= 50900 && nHeight > 40820) { // Phase 4
-                nSubsidy = 2.5 * COIN;
-            } else if (nHeight <= 60980 && nHeight > 50900) { // Phase 5
-                nSubsidy = 3 * COIN;
-            } else if (nHeight <= 71060 && nHeight > 60980) { // Phase 6
-                nSubsidy = 3.5 * COIN;
-            } else if (nHeight <= 81140 && nHeight > 71060) { // Phase 7
-                nSubsidy = 4 * COIN;
-            } else if (nHeight <= 91220 && nHeight > 81140) { // Phase 8
-                nSubsidy = 4.5 * COIN;
-            } else if (nHeight <= 101300 && nHeight > 91220) { // Phase 9
-                nSubsidy = 5 * COIN;
-            } else if (nHeight <= 111380 && nHeight > 101300) { // Phase 10
-                nSubsidy = 5.5 * COIN;
-            } else if (nHeight <= 121460 && nHeight > 111380) { // Phase 11
-                nSubsidy = 6 * COIN;
-            } else if (nHeight <= 131540 && nHeight > 121460) { // Phase 12
-                nSubsidy = 6.5 * COIN;
-            } else if (nHeight <= 141620 && nHeight > 131540) { // Phase 13
-                nSubsidy = 7 * COIN;
-            } else if (nHeight <= 151700 && nHeight > 141620) { // Phase 14
-                nSubsidy = 7.5 * COIN;
-            } else if (nHeight <= 161780 && nHeight > 151700) { // Phase 15
-                nSubsidy = 8 * COIN;
-            } else if (nHeight <= 171860 && nHeight > 161780) { // Phase 16
-                nSubsidy = 8.5 * COIN;
-            } else if (nHeight <= 181940 && nHeight > 171860) { // Phase 17
-                nSubsidy = 9 * COIN;
-            } else if (nHeight <= 192020 && nHeight > 181940) { // Phase 18
-                nSubsidy = 9.5 * COIN;
-            } else if (nHeight <= 202100 && nHeight > 192020) { // Phase 19
-                nSubsidy = 10 * COIN;
-            } else if (nHeight <= 461300 && nHeight > 202100) { // Phase 20
-                nSubsidy = 5 * COIN;
-            } else if (nHeight <= 720500 && nHeight > 461300) { // Phase 21
-                nSubsidy = 4.75 * COIN;
-            } else if (nHeight <= 979700 && nHeight > 720500) { // Phase 22
-                nSubsidy = 4.5 * COIN;
-            } else if (nHeight <= 1238900 && nHeight > 979700) { // Phase 23
-                nSubsidy = 4.25 * COIN;
-            } else if (nHeight > 1238900) { // Phase 24
-                nSubsidy = 4 * COIN;
-            }
+                nSubsidy = 1000000 * COIN;} 
+			else if (nHeight < 200 && nHeight > 0) {nSubsidy = 0 * COIN;} 
+			else if (nHeight < 3800) {nSubsidy = 0.01 * COIN;}
+			else if (nHeight < 13880) {nSubsidy = 2 * COIN;} 
+			else if (nHeight < 23960) {nSubsidy = 2.25 * COIN;} 
+			else if (nHeight < 34040) {nSubsidy = 2.5 * COIN;} 
+			else if (nHeight < 44120) {nSubsidy = 2.75 * COIN;} 
+			else if (nHeight < 54200) {nSubsidy = 3 * COIN;} 
+			else if (nHeight < 64280) {nSubsidy = 3.25 * COIN;} 
+			else if (nHeight < 74360) {nSubsidy = 3.5 * COIN;} 
+			else if (nHeight < 84440) {nSubsidy = 3.75 * COIN;} 
+			else if (nHeight < 94520) {nSubsidy = 4 * COIN;} 
+			else if (nHeight < 104600) {nSubsidy = 4.25 * COIN;} 
+			else if (nHeight < 114680) {nSubsidy = 4.5 * COIN;} 
+			else if (nHeight < 124760) {nSubsidy = 4.75 * COIN;} 
+			else if (nHeight < 134840) {nSubsidy = 5 * COIN;} 
+			else if (nHeight < 144920) {nSubsidy = 5.25 * COIN;}
+			else if (nHeight < 155000) {nSubsidy = 5.5 * COIN;}
+			else if (nHeight < 165080) {nSubsidy = 5.75 * COIN;}
+			else if (nHeight < 175160) {nSubsidy = 6 * COIN;}
+			else if (nHeight < 185240) {nSubsidy = 6.25 * COIN;}
+			else if (nHeight < 195320) {nSubsidy = 6.5 * COIN;}
+			else if (nHeight < 454520) {nSubsidy = 5 * COIN;}
+			else if (nHeight < 713720) {nSubsidy = 4.75 * COIN;}
+			else if (nHeight < 972920) {nSubsidy = 4.5 * COIN;}
+			else if (nHeight < 1232120) {nSubsidy = 4.25 * COIN;}
+			else if (nHeight > 1232120) {nSubsidy = 4 * COIN;}
             // Check if we reached the coin max supply.
             int64_t nMoneySupply = chainActive.Tip()->nMoneySupply;
             if (nMoneySupply + nSubsidy >= Params().MaxMoneyOut())
@@ -2250,9 +2223,9 @@ bool CheckTransaction(const CTransaction& tx, bool fZerocoinActive, bool fReject
         {
             int64_t ret = 0;
 
-            if (nHeight <= 10080) {
+            if (nHeight < 200) {
                 ret = blockValue * 0;
-            } else if (nHeight > 10080) {
+            } else if (nHeight > 200) {
                 ret = blockValue * 0.9; //90% for nodes
             }
 
@@ -3055,7 +3028,7 @@ bool CheckTransaction(const CTransaction& tx, bool fZerocoinActive, bool fReject
 
             unsigned int flags = SCRIPT_VERIFY_P2SH | SCRIPT_VERIFY_DERSIG;
 
-            if (GetSporkValue(SPORK_18_SEGWIT_ACTIVATION) < block.nTime) {
+            if (FULL_SEGWIT < chainActive.Height()) {
                 flags |= SCRIPT_VERIFY_WITNESS | SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY | SCRIPT_VERIFY_CHECKSEQUENCEVERIFY;
             }
 
@@ -3196,7 +3169,7 @@ bool CheckTransaction(const CTransaction& tx, bool fZerocoinActive, bool fReject
             LogPrint("bench", "      - Connect %u transactions: %.2fms (%.3fms/tx, %.3fms/txin) [%.2fs]\n", (unsigned)block.vtx.size(), 0.001 * (nTime1 - nTimeStart), 0.001 * (nTime1 - nTimeStart) / block.vtx.size(), nInputs <= 1 ? 0 : 0.001 * (nTime1 - nTimeStart) / (nInputs - 1), nTimeConnect * 0.000001);
 
             //PoW phase redistributed fees to miner. PoS stage destroys fees.
-            CAmount nExpectedMint = GetBlockValue(pindex->pprev->nHeight);
+			CAmount nExpectedMint = GetBlockValue(pindex->nHeight);
             if (block.IsProofOfWork())
                 nExpectedMint += nFees;
 
@@ -4195,7 +4168,7 @@ bool CheckTransaction(const CTransaction& tx, bool fZerocoinActive, bool fReject
                     return state.DoS(100, error("CheckBlock() : more than one coinbase"),
                         REJECT_INVALID, "bad-cb-multiple");
 
-            if (block.IsProofOfStake()) {
+            /*if (block.IsProofOfStake()) {
                 int commitpos = GetWitnessCommitmentIndex(block);
                 if (commitpos >= 0) {
                     if (IsSporkActive(SPORK_21_SEGWIT_ON_COINBASE)) {
@@ -4220,7 +4193,21 @@ bool CheckTransaction(const CTransaction& tx, bool fZerocoinActive, bool fReject
                 for (unsigned int i = 2; i < block.vtx.size(); i++)
                     if (block.vtx[i].IsCoinStake())
                         return state.DoS(100, error("CheckBlock() : more than one coinstake"));
-            }
+            }*/
+
+			if ((block.IsProofOfStake())) {
+				// Coinbase output should be empty if proof-of-stake block
+				int commitpos = GetWitnessCommitmentIndex(block);
+				if (block.vtx[0].vout.size() != (commitpos == -1 ? 1 : 2) || !block.vtx[0].vout[0].IsEmpty())
+					return state.DoS(100, false, REJECT_INVALID, "bad-cb-missing", false, "coinbase output not empty for proof-of-stake block");
+
+				// Second transaction must be coinstake, the rest must not be
+				if (block.vtx.empty() || !block.vtx[1].IsCoinStake())
+					return state.DoS(100, error("%s: second tx is not coinstake", __func__));
+				for (unsigned int i = 2; i < block.vtx.size(); i++)
+					if (block.vtx[i].IsCoinStake())
+						return state.DoS(100, error("%s: more than one coinstake", __func__));
+			}
 
 			// Credit to BarryStyle for this code used in Merge Project
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -4320,17 +4307,18 @@ bool CheckTransaction(const CTransaction& tx, bool fZerocoinActive, bool fReject
         // Modified according to Lux coin to make SegWit working
         bool CheckWork(const CBlock block, CBlockIndex* const pindexPrev)
         {
-            const CChainParams& chainParams = Params();
-            if (pindexPrev == NULL)
-                return error("%s: null pindexPrev for block %s", __func__, block.GetHash().GetHex());
+			const CChainParams& chainParams = Params();
+			if (pindexPrev == NULL)
+				return error("%s: null pindexPrev for block %s", __func__, block.GetHash().GetHex());
 
-            unsigned int nBitsRequired = GetNextWorkRequired(pindexPrev, &block);
+			unsigned int nBitsRequired = GetNextWorkRequired(pindexPrev, &block);
 
-            if (block.IsProofOfWork() && pindexPrev->nHeight + 1 > chainParams.LAST_POW_BLOCK())
-                return error("%s: reject proof-of-work at height %d", __func__, pindexPrev->nHeight + 1);
+			if (block.IsProofOfWork() && pindexPrev->nHeight + 1 > chainParams.LAST_POW_BLOCK())
+				return error("%s: reject proof-of-work at height %d", __func__, pindexPrev->nHeight + 1);
 
-            if (block.nBits != nBitsRequired)
-                return error("%s: incorrect proof of work at %d", __func__, pindexPrev->nHeight + 1);
+			if (block.nBits != nBitsRequired)
+				return error("%s: incorrect proof of work at %d", __func__, pindexPrev->nHeight + 1);
+
 
             if (block.IsProofOfStake()) {
                 uint256 hashProofOfStake;
@@ -4414,7 +4402,7 @@ bool CheckTransaction(const CTransaction& tx, bool fZerocoinActive, bool fReject
         {
             int commitpos = GetWitnessCommitmentIndex(block);
             static const std::vector<unsigned char> nonce(32, 0x00);
-            if (commitpos != -1 && GetSporkValue(SPORK_18_SEGWIT_ACTIVATION) < pindexPrev->nTime && block.vtx[0].wit.IsEmpty()) {
+            if (commitpos != -1 && FULL_SEGWIT < chainActive.Height() && block.vtx[0].wit.IsEmpty()) {
                 block.vtx[0].wit.vtxinwit.resize(1);
                 block.vtx[0].wit.vtxinwit[0].scriptWitness.stack.resize(1);
                 block.vtx[0].wit.vtxinwit[0].scriptWitness.stack[0] = nonce;
@@ -4433,7 +4421,7 @@ bool CheckTransaction(const CTransaction& tx, bool fZerocoinActive, bool fReject
                 }
             }
             std::vector<unsigned char> ret(32, 0x00);
-            if (fHaveWitness && GetSporkValue(SPORK_18_SEGWIT_ACTIVATION) < pindexPrev->nTime) {
+            if (fHaveWitness && FULL_SEGWIT < chainActive.Height()) {
                 if (commitpos == -1) {
                     uint256 witnessroot = BlockWitnessMerkleRoot(block, NULL);
                     CHash256().Write(witnessroot.begin(), 32).Write(&ret[0], 32).Finalize(witnessroot.begin());
@@ -4494,7 +4482,7 @@ bool CheckTransaction(const CTransaction& tx, bool fZerocoinActive, bool fReject
 
                 vector<CBigNum> vBlockSerials;
                 for (const CTransaction& tx : block.vtx) {
-                    if (!CheckTransaction(tx, true, chainActive.Height() + 1 >= Params().Zerocoin_StartHeight(), state, GetSporkValue(SPORK_18_SEGWIT_ACTIVATION) < block.nTime))
+                    if (!CheckTransaction(tx, true, chainActive.Height() + 1 >= Params().Zerocoin_StartHeight(), state, FULL_SEGWIT < chainActive.Height()))
                         return error("CheckBlock() : CheckTransaction failed");
 
                     // double check that there are no double spent zVPX spends in this block
@@ -4541,42 +4529,39 @@ bool CheckTransaction(const CTransaction& tx, bool fZerocoinActive, bool fReject
             // * There must be at least one output whose scriptPubKey is a single 36-byte push, the first 4 bytes of which are
             //   {0xaa, 0x21, 0xa9, 0xed}, and the following 32 bytes are SHA256(witness root, witness nonce). In case there are
             //   multiple, the last one is used.
-            bool fHaveWitness = false;
-            if (GetSporkValue(SPORK_18_SEGWIT_ACTIVATION) < pindexPrev->nTime) {
-                int commitpos = GetWitnessCommitmentIndex(block);
-                if (commitpos != -1) {
-                    if (!IsSporkActive(SPORK_21_SEGWIT_ON_COINBASE)) {
-                        if (fDebug) {
-                            LogPrintf("CheckBlock() : staking-on-segwit is not enabled.\n");
-                        }
-                        return false;
-                    }
+			bool fHaveWitness = false;
+			if (STAKING_ON_SEGWIT < pindexPrev->nTime) {
+				int commitpos = GetWitnessCommitmentIndex(block);
+				if (commitpos != -1) {
+					bool malleated = false;
+					uint256 hashWitness = BlockWitnessMerkleRoot(block, &malleated);
+					// The malleation check is ignored; as the transaction tree itself
+					// already does not permit it, it is impossible to trigger in the
+					// witness tree.
 
+					if (block.vtx[0].wit.vtxinwit.size() != 1 || block.vtx[0].wit.vtxinwit[0].scriptWitness.stack.size() != 1 || block.vtx[0].wit.vtxinwit[0].scriptWitness.stack[0].size() != 32) {
+						return state.DoS(100, error("%s : invalid witness nonce size", __func__), REJECT_INVALID, "bad-witness-nonce-size", true);
+					}
+					CHash256().Write(hashWitness.begin(), 32).Write(&block.vtx[0].wit.vtxinwit[0].scriptWitness.stack[0][0], 32).Finalize(hashWitness.begin());
+					if (memcmp(hashWitness.begin(), &block.vtx[0].vout[commitpos].scriptPubKey[6], 32)) {
+						return state.DoS(100, error("%s : witness merkle commitment mismatch", __func__), REJECT_INVALID, "bad-witness-merkle-match", true);
+					}
+					fHaveWitness = true;
+					//Remove this log when everything is working correctly for a period of time.
+					LogPrintf("CheckBlock() : Boom staking-on-segwit was turned on 07/26/2019 @ 11:20pm (UTC).\n");
+				}
+			}
 
-                    bool malleated = false;
-                    uint256 hashWitness = BlockWitnessMerkleRoot(block, &malleated);
-                    // The malleation check is ignored; as the transaction tree itself
-                    // already does not permit it, it is impossible to trigger in the
-                    // witness tree.
-                    if (block.vtx[0].wit.vtxinwit.size() != 1 || block.vtx[0].wit.vtxinwit[0].scriptWitness.stack.size() != 1 || block.vtx[0].wit.vtxinwit[0].scriptWitness.stack[0].size() != 32) {
-                        return state.DoS(100, error("%s : invalid witness nonce size", __func__), REJECT_INVALID, "bad-witness-nonce-size", true);
-                    }
-                    CHash256().Write(hashWitness.begin(), 32).Write(&block.vtx[0].wit.vtxinwit[0].scriptWitness.stack[0][0], 32).Finalize(hashWitness.begin());
-                    if (memcmp(hashWitness.begin(), &block.vtx[0].vout[commitpos].scriptPubKey[6], 32)) {
-                        return state.DoS(100, error("%s : witness merkle commitment mismatch", __func__), REJECT_INVALID, "bad-witness-merkle-match", true);
-                    }
-                    fHaveWitness = true;
-                }
-            }
-
-            // No witness data is allowed in blocks that don't commit to witness data, as this would otherwise leave room for spam
-            if (!fHaveWitness) {
-                for (size_t i = 0; i < block.vtx.size(); i++) {
-                    if (!block.vtx[i].wit.IsNull()) {
-                        return state.DoS(100, error("%s : unexpected witness data found", __func__), REJECT_INVALID, "unexpected-witness", true);
-                    }
-                }
-            }
+			// No witness data is allowed in blocks that don't commit to witness data, as this would otherwise leave room for spam
+			if (!fHaveWitness) {
+				for (size_t i = 0; i < block.vtx.size(); i++) {
+					if (!block.vtx[i].wit.IsNull()) {
+						//return state.DoS(100, error("%s : unexpected witness data found", __func__), REJECT_INVALID, "unexpected-witness", true);
+						LogPrintf("Before Full Segwit : Unexpected witness data found on this block prior to 07/21/2019 @ 3:34pm (UTC).\n");
+						fHaveWitness = true;
+					}
+				}
+			}
 
             // After the coinbase witness nonce and commitment are verified,
             // we can check if the block cost passes (before we've checked the
@@ -5231,7 +5216,7 @@ bool CheckTransaction(const CTransaction& tx, bool fZerocoinActive, bool fReject
 
             int nHeight = 1;
             while (nHeight <= chainActive.Height()) {
-                if (GetSporkValue(SPORK_18_SEGWIT_ACTIVATION) < chainActive[nHeight - 1]->nTime && !(chainActive[nHeight]->nStatus & BLOCK_OPT_WITNESS)) {
+                if (FULL_SEGWIT < chainActive.Height() && !(chainActive[nHeight]->nStatus & BLOCK_OPT_WITNESS)) {
                     break;
                 }
                 nHeight++;
@@ -5254,7 +5239,7 @@ bool CheckTransaction(const CTransaction& tx, bool fZerocoinActive, bool fReject
             // to disk before writing the chainstate, resulting in a failure to continue if interrupted.
             for (BlockMap::iterator it = mapBlockIndex.begin(); it != mapBlockIndex.end(); it++) {
                 CBlockIndex* pindexIter = it->second;
-                if (GetSporkValue(SPORK_18_SEGWIT_ACTIVATION) < pindexIter->nTime && !(pindexIter->nStatus & BLOCK_OPT_WITNESS)) {
+                if (FULL_SEGWIT < chainActive.Height() && !(pindexIter->nStatus & BLOCK_OPT_WITNESS)) {
                     // Reduce validity
                     pindexIter->nStatus = std::min<unsigned int>(pindexIter->nStatus & BLOCK_VALID_MASK, BLOCK_VALID_TREE) | (pindexIter->nStatus & ~BLOCK_VALID_MASK);
                     // Remove have-data flags.
@@ -6224,7 +6209,7 @@ bool CheckTransaction(const CTransaction& tx, bool fZerocoinActive, bool fReject
                             // doing this will result in the received block being rejected as an orphan in case it is
                             // not a direct successor.
                             if (State(pfrom->GetId())->fHaveWitness &&
-                                (GetSporkValue(SPORK_18_SEGWIT_ACTIVATION) > chainActive.Tip()->nTime || State(pfrom->GetId())->fHaveWitness)) {
+                                (FULL_SEGWIT > chainActive.Height() || State(pfrom->GetId())->fHaveWitness)) {
                                 inv.type = MSG_WITNESS_BLOCK;
                             }
                             vToFetch.push_back(inv);
@@ -7158,7 +7143,7 @@ bool CheckTransaction(const CTransaction& tx, bool fZerocoinActive, bool fReject
                     NodeId staller = -1;
                     FindNextBlocksToDownload(pto->GetId(), MAX_BLOCKS_IN_TRANSIT_PER_PEER - state.nBlocksInFlight, vToDownload, staller);
                     BOOST_FOREACH (CBlockIndex* pindex, vToDownload) {
-                        if (State(pto->GetId())->fHaveWitness || GetSporkValue(SPORK_18_SEGWIT_ACTIVATION) > pindex->pprev->nTime) {
+                        if (State(pto->GetId())->fHaveWitness || FULL_SEGWIT > chainActive.Height()) {
                             vGetData.push_back(CInv(State(staller)->fHaveWitness ? MSG_WITNESS_BLOCK : MSG_BLOCK, pindex->GetBlockHash()));
                             MarkBlockAsInFlight(pto->GetId(), pindex->GetBlockHash(), pindex);
                             LogPrint("net", "Requesting block %s (%d) peer=%d\n", pindex->GetBlockHash().ToString(),

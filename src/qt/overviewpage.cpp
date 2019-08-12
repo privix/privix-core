@@ -395,27 +395,27 @@ void OverviewPage::updateMasternodeInfo()
         ui->labelMnTotal_Value->setText(QString::number(totalmn));
 
         // TODO: need a read actual 24h blockcount from chain
-        int BlockCount24h = 1440;
+        int BlockCount24h = 720;
 
         // Update ROI
 		double BlockReward = GetBlockValue(chainActive.Height());
         double roi1 = (0.90 * BlockReward * BlockCount24h) / mn1 / COIN;
 
-    if (IsSporkActive(SPORK_22_NEW_COLLATERAL)) {
+    /*if (IsSporkActive(SPORK_22_NEW_COLLATERAL)) {
             CAmount tNodesSumm = mn1 * Params().MasternodeCollateralAmtNew();
             CAmount tMoneySupply = chainActive.Tip()->nMoneySupply;
             double tLocked = tMoneySupply > 0 ? 100 * static_cast<double>(tNodesSumm) / static_cast<double>(tMoneySupply / COIN) : 0;
             ui->label_LockedCoin_value->setText(QString::number(tNodesSumm).append(" (" + QString::number(tLocked, 'f', 1) + "%)"));
             ui->roi_1->setText(mn1 == 0 ? "-" : QString::number(roi1, 'f', 0).append("  "));
             ui->roi_2->setText(mn1 == 0 ? " " : QString::number(2000 / roi1, 'f', 1).append(" days"));
-	}else{
+	}else{*/
 			CAmount tNodesSumm = mn1 * Params().MasternodeCollateralAmt();
 			CAmount tMoneySupply = chainActive.Tip()->nMoneySupply;
 			double tLocked = tMoneySupply > 0 ? 100 * static_cast<double>(tNodesSumm) / static_cast<double>(tMoneySupply / COIN) : 0;
 			ui->label_LockedCoin_value->setText(QString::number(tNodesSumm).append(" (" + QString::number(tLocked, 'f', 1) + "%)"));
 			ui->roi_1->setText(mn1 == 0 ? "-" : QString::number(roi1, 'f', 0).append("  "));
 			ui->roi_2->setText(mn1 == 0 ? " " : QString::number(1000 / roi1, 'f', 1).append(" days"));
-		}
+		//}
 
         // Update Timer
         if (timerinfo_mn->interval() == 1000)
@@ -423,11 +423,11 @@ void OverviewPage::updateMasternodeInfo()
     }
 
     // Update Collateral Info
-  if (IsSporkActive(SPORK_22_NEW_COLLATERAL)) {
-        ui->label_lcolat->setText("2000"); 
-	}else{
+ // if (IsSporkActive(SPORK_22_NEW_COLLATERAL)) {
+       // ui->label_lcolat->setText("2000"); 
+	//}else{
 		ui->label_lcolat->setText("1000");
-    }
+    //}
 }
 
 //All credit goes to the ESB team for developing this. https://github.com/BlockchainFor/ESBC2
